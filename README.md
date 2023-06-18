@@ -5,9 +5,7 @@
 %> iex -S mix
 ```
 
-Go to `http://localhost:15672` and use the credentials `u: guest` and `p: guest`.
-
-In the `bookings` queue, you can publish messages.
+Go to `http://localhost:15672` and use the credentials `u: guest` and `p: guest`. In the `bookings` queue, you can publish messages.
 
 The message `musical,1` will result in:
 ```
