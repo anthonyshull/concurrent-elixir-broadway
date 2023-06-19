@@ -22,6 +22,7 @@ defmodule Tickets.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:amqp, "3.3.0"},
       {:broadway, "1.0.7"},
       {:broadway_rabbitmq, "0.8.0"}
     ]

@@ -5,14 +5,10 @@ defmodule Tickets do
     %{id: "3", email: "baz@internet.com"}
   ]
 
-  def tickets_available?("cinema") do
-    Process.sleep(Enum.random(100..200))
-    false
-  end
+  def insert_all_tickets(messages) do
+    Process.sleep(Enum.count(messages) * 5)
 
-  def tickets_available?(_event) do
-    Process.sleep(Enum.random(100..200))
-    true
+    messages
   end
 
   def create_ticket(_user, _event) do
@@ -21,6 +17,19 @@ defmodule Tickets do
 
   def send_email(_user) do
     Process.sleep(Enum.random(100..200))
+  end
+
+  def tickets_available?("opera") do
+    Process.sleep(Enum.random(100..200))
+
+    false
+  end
+
+
+  def tickets_available?(_event) do
+    Process.sleep(Enum.random(100..200))
+
+    true
   end
 
   def users_by_ids(ids) do

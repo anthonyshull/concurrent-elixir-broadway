@@ -12,6 +12,7 @@ defmodule BookingsPipeline do
   def start_link(_args) do
     options = [
       name: BookingsPipeline,
+      batchers: [default: [batch_size: 10]],
       producer: [module: {@producer, @producer_config}],
       processors: [default: []]
     ]
@@ -19,14 +20,22 @@ defmodule BookingsPipeline do
     Broadway.start_link(__MODULE__, options)
   end
 
+  def handle_batch(_batcher, messages, _batch_info, _context) do
+    messages
+    |> Tickets.insert_all_tickets()
+    |> Enum.each(fn message ->
+      Tickets.send_email(message.data.user)
+      IO.inspect(message.data, label: "Booking succeeded")
+    end)
+
+    messages
+  end
+
   def handle_message(_processor, message, _context) do
-    %{data: %{event: event, user: user}} = message
+    %{data: %{event: event}} = message
 
     if Tickets.tickets_available?(event) do
-      Tickets.create_ticket(user, event)
-      Tickets.send_email(user)
-
-      IO.inspect(message.data, label: "Successful message")
+      Broadway.Message.put_batcher(message, :default)
 
       message
     else
@@ -57,7 +66,7 @@ defmodule BookingsPipeline do
 
   def handle_failed(messages, _context) do
     Enum.each(messages, fn message ->
-      IO.inspect(message.data, label: "Failed message")
+      IO.inspect(message.data, label: "Booking failed")
     end)
 
     messages
