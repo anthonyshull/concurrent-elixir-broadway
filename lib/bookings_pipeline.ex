@@ -24,8 +24,9 @@ defmodule BookingsPipeline do
     messages
     |> Tickets.insert_all_tickets()
     |> Enum.each(fn message ->
-      Tickets.send_email(message.data.user)
-      IO.inspect(message.data, label: "Booking succeeded")
+      channel = message.metadata.amqp_channel
+      payload = "email,#{message.data.event},#{message.data.user.email}"
+      AMQP.Basic.publish(channel, "", "notifications", payload)
     end)
 
     messages
@@ -66,7 +67,7 @@ defmodule BookingsPipeline do
 
   def handle_failed(messages, _context) do
     Enum.each(messages, fn message ->
-      IO.inspect(message.data, label: "Booking failed")
+      IO.inspect("#{message.data.event} for #{message.data.user.email}", label: "Booking failed")
     end)
 
     messages
