@@ -15,7 +15,7 @@ defmodule Tickets do
     Process.sleep(Enum.random(100..200))
   end
 
-  def send_email(_user) do
+  def send_email(_user, _message) do
     Process.sleep(Enum.random(100..200))
   end
 
@@ -24,7 +24,6 @@ defmodule Tickets do
 
     false
   end
-
 
   def tickets_available?(_event) do
     Process.sleep(Enum.random(100..200))

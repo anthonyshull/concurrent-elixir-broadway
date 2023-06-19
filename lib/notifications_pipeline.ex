@@ -24,6 +24,7 @@ defmodule NotificationsPipeline do
   def handle_batch(_batcher, messages, batch_info, _context) do
     events = Enum.map(messages, & &1.data.event) |> Enum.uniq() |> Enum.join(", ")
 
+    Tickets.send_email(batch_info.batch_key, events)
     IO.inspect("#{events} for #{batch_info.batch_key}", label: "Booking succeeded")
 
     messages
@@ -38,7 +39,7 @@ defmodule NotificationsPipeline do
   def prepare_messages(messages, _context) do
     Enum.map(messages, fn message ->
       Broadway.Message.update_data(message, fn data ->
-        [type,event,recipient] = String.split(data, ",")
+        [type, event, recipient] = String.split(data, ",")
         %{type: type, event: event, recipient: recipient}
       end)
     end)
