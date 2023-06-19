@@ -12,4 +12,4 @@ iex> send_messages.(10)
 You'll see some failed bookings for 'opera' as there are no tickets for the event.
 
 You'll see *at most* three successful booking notifications after the three second window has elapsed.
-We are batching notifications by email address so that anyone booking multiple events only gets one notification rather than N number.
+We are batching notifications by email address so that anyone booking multiple events only gets one notification rather than **N** number.

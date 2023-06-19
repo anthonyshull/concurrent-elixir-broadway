@@ -22,7 +22,7 @@ defmodule NotificationsPipeline do
   end
 
   def handle_batch(_batcher, messages, batch_info, _context) do
-    events = Enum.map(messages, & &1.data.event) |> Enum.uniq() |> Enum.join(", ")
+    events = messages |> Enum.map(& &1.data.event) |> Enum.uniq() |> Enum.join(", ")
 
     Tickets.send_email(batch_info.batch_key, events)
     IO.inspect("#{events} for #{batch_info.batch_key}", label: "Booking succeeded")
